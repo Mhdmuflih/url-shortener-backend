@@ -16,7 +16,7 @@ export class UrlService implements IUrlService {
         return urlData;
       }
 
-      const shortCode = `https://url-shortener-api.muflih.online/url/${nanoid(6)}`;
+      const shortCode = `http://localhost:3000/url/${nanoid(6)}`;
       const createURLShotener = new this.urlModel({
         originalURL: longURL,
         shortURL: shortCode,
@@ -32,7 +32,10 @@ export class UrlService implements IUrlService {
 
   async getOriginal(code: string): Promise<URLDocument> {
     try {
-      const data = await this.urlModel.findOne({ shortURL: `https://url-shortener-api.muflih.online/url/${code}` });
+      const data = await this.urlModel.findOne({ shortURL: `http://localhost:3000/url/${code}` });
+      if(!data){
+        return ;
+      }
       return data;
     } catch (error: any) {
       console.log(error.message);
