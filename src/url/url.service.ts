@@ -33,9 +33,6 @@ export class UrlService implements IUrlService {
   async getOriginal(code: string): Promise<URLDocument> {
     try {
       const data = await this.urlModel.findOne({ shortURL: `http://localhost:3000/url/${code}` });
-      if (!data) {
-        throw new ConflictException('This short URL code does not exist.');
-      }
       return data;
     } catch (error: any) {
       console.log(error.message);

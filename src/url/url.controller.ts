@@ -25,7 +25,10 @@ export class UrlController implements IUrlController {
   async redirect(@Param('code') code: string, @Res() res: Response): Promise<void> {
     try {
       const found: URLDocument = await this.urlService.getOriginal(code);
-      return res.redirect(found.originalURL)
+      if(found) {
+        return res.redirect(found.originalURL)
+      }
+      return res.redirect(`${process.env.FRONTEND}/${code}`);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
