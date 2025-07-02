@@ -21,11 +21,23 @@ export class UrlController implements IUrlController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('get-urls')
+  async getURLs(@Headers('x-user-id') userId: string): Promise<{ success: boolean, message: string, URLs: URLDocument[] }> {
+    try {
+      const urlData: URLDocument[] = await this.urlService.getURLs(userId);
+      return { success: true, message: "successfully received URL.", URLs: urlData }
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Get(':code')
   async redirect(@Param('code') code: string, @Res() res: Response): Promise<void> {
     try {
       const found: URLDocument = await this.urlService.getOriginal(code);
-      if(found) {
+      if (found) {
         return res.redirect(found.originalURL)
       }
       return res.redirect(`${process.env.FRONTEND}/${code}`);
